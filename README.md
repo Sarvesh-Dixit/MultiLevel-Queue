@@ -164,7 +164,7 @@ This helps in analyzing which algorithm performs best under given conditions.
 ## 👨‍💻 Author
 
 **Sarvesh Dixit**
-Final Year Project (Capstone)
+
 
 ---
 
