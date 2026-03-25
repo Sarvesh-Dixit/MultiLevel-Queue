@@ -1,0 +1,11 @@
+{
+  "name": "mlq-workspace-runner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root scripts to run the MLQ scheduling project",
+  "scripts": {
+    "start": "npm --prefix ./project-root/backend start",
+    "dev": "npm --prefix ./project-root/backend run dev",
+    "install:backend": "npm --prefix ./project-root/backend install"
+  }
+}

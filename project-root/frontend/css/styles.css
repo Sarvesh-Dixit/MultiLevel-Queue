@@ -1,0 +1,95 @@
+:root {
+  --ink: #1d1b16;
+  --paper: #f8f5ef;
+  --sun: #ffc857;
+  --lagoon: #264653;
+  --mint: #2a9d8f;
+  --danger: #bc4749;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 20% 20%, #fff7d6 0%, #f8f5ef 40%, #e6f0f0 100%);
+  min-height: 100vh;
+}
+
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: radial-gradient(#000 0.5px, transparent 0.5px);
+  background-size: 6px 6px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(38, 70, 83, 0.2);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(38, 70, 83, 0.08);
+}
+
+.hero-title {
+  letter-spacing: -0.03em;
+}
+
+.step-item {
+  border-left: 3px solid var(--mint);
+  padding-left: 0.75rem;
+}
+
+.fade-in {
+  animation: fadeUp 550ms ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badge-rr {
+  background: #ffe8b1;
+  color: #6f4f00;
+}
+
+.badge-fcfs {
+  background: #d4f4f0;
+  color: #0f4f47;
+}
+
+.badge-sjf {
+  background: #f5d8dd;
+  color: #6e2431;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+thead th {
+  white-space: nowrap;
+}

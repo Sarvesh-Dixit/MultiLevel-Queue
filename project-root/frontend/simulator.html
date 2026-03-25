@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulator | MLQ CPU Scheduling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="noise-overlay"></div>
+    <header class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+      <div class="mono text-sm font-semibold">CPU Scheduling Lab</div>
+      <nav class="flex gap-3 text-sm">
+        <a href="index.html" class="px-3 py-2 rounded-full bg-white/80 hover:bg-white">Home</a>
+        <a href="simulator.html" class="px-3 py-2 rounded-full bg-slate-900 text-white">Simulator</a>
+        <a href="comparison.html" class="px-3 py-2 rounded-full bg-white/80 hover:bg-white">Comparison</a>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+      <section class="glass-card p-6 fade-in">
+        <h1 class="text-2xl md:text-3xl font-bold">Interactive Scheduling Simulator</h1>
+        <p class="text-slate-700 mt-2">Input processes, select an algorithm, and inspect Gantt chart, metrics, and decision steps.</p>
+
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
+          <div>
+            <label class="text-sm font-semibold">Algorithm</label>
+            <select id="algorithmSelect" class="mt-1 w-full rounded-lg border p-2 bg-white">
+              <option value="mlq">Multilevel Queue (MLQ)</option>
+              <option value="fcfs">FCFS</option>
+              <option value="sjf">SJF</option>
+              <option value="rr">Round Robin</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-semibold">Time Quantum (RR / MLQ RR Queues)</label>
+            <input id="timeQuantum" type="number" min="1" value="2" class="mt-1 w-full rounded-lg border p-2 bg-white" />
+          </div>
+          <div class="flex items-end gap-2">
+            <button id="loadSampleBtn" class="px-4 py-2 rounded-lg bg-amber-300 hover:bg-amber-400 font-semibold">Load Sample</button>
+            <button id="solveBtn" class="px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700 font-semibold">Solve</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass-card p-6 mt-6 fade-in">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold">Process Table</h2>
+          <div class="flex gap-2">
+            <button id="addProcessBtn" class="px-3 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">Add Process</button>
+            <button id="removeProcessBtn" class="px-3 py-2 rounded-lg bg-rose-600 text-white hover:bg-rose-700">Remove Process</button>
+          </div>
+        </div>
+        <div class="table-wrap mt-4">
+          <table class="w-full text-sm" id="processTable">
+            <thead>
+              <tr class="text-left border-b">
+                <th class="p-2">Process ID</th>
+                <th class="p-2">Arrival Time</th>
+                <th class="p-2">Burst Time</th>
+                <th class="p-2">Queue Number</th>
+                <th class="p-2">Priority (Optional)</th>
+              </tr>
+            </thead>
+            <tbody id="processTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="glass-card p-6 mt-6 fade-in">
+        <h2 class="text-xl font-bold">MLQ Queue Configuration (JSON)</h2>
+        <p class="text-slate-700 text-sm mt-1">Define queue priorities and queue-level algorithm strategy.</p>
+        <textarea id="mlqQueueConfig" class="mt-3 w-full rounded-lg border p-3 mono text-xs h-36 bg-white">[
+  { "queueNumber": 1, "priority": 1, "algorithm": "RR", "quantum": 2 },
+  { "queueNumber": 2, "priority": 2, "algorithm": "FCFS" }
+]</textarea>
+      </section>
+
+      <section class="glass-card p-5 mt-6 fade-in">
+        <h2 class="text-xl font-bold">Gantt Chart</h2>
+        <p id="currentExecution" class="mono text-sm mt-2 text-slate-700">Execution highlight will appear here after solving.</p>
+        <div class="mt-4 w-full lg:w-2/3 mx-auto">
+          <canvas id="ganttCanvas" height="80"></canvas>
+        </div>
+      </section>
+
+      <section class="glass-card p-6 mt-6 fade-in">
+        <h2 class="text-xl font-bold">Metrics</h2>
+        <div class="table-wrap mt-4">
+          <table class="w-full text-sm" id="metricsTable">
+            <thead>
+              <tr class="text-left border-b">
+                <th class="p-2">Process</th>
+                <th class="p-2">WT</th>
+                <th class="p-2">TAT</th>
+                <th class="p-2">RT</th>
+              </tr>
+            </thead>
+            <tbody id="metricsBody"></tbody>
+          </table>
+        </div>
+        <div class="mt-4 mono text-sm">
+          <p id="avgWT">Average WT: -</p>
+          <p id="avgTAT">Average TAT: -</p>
+        </div>
+      </section>
+
+      <section class="glass-card p-6 mt-6 fade-in">
+        <h2 class="text-xl font-bold">Step-by-Step Execution Reasoning</h2>
+        <ol id="stepsList" class="mt-4 space-y-2 text-sm text-slate-800"></ol>
+      </section>
+
+      <section class="mt-4">
+        <p id="errorBox" class="hidden p-3 rounded-lg bg-rose-100 text-rose-800 text-sm"></p>
+      </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/simulator.js"></script>
+  </body>
+</html>

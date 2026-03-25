@@ -1,0 +1,13 @@
+{
+  "timeQuantum": 2,
+  "queues": [
+    { "queueNumber": 1, "priority": 1, "algorithm": "RR", "quantum": 2 },
+    { "queueNumber": 2, "priority": 2, "algorithm": "FCFS" }
+  ],
+  "processes": [
+    { "processId": "P1", "arrivalTime": 0, "burstTime": 5, "queueNumber": 1 },
+    { "processId": "P2", "arrivalTime": 1, "burstTime": 3, "queueNumber": 1 },
+    { "processId": "P3", "arrivalTime": 2, "burstTime": 7, "queueNumber": 2 },
+    { "processId": "P4", "arrivalTime": 3, "burstTime": 4, "queueNumber": 2 }
+  ]
+}
